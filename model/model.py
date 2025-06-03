@@ -45,6 +45,6 @@ class Model:
         return self._grafo.number_of_nodes(), self._grafo.number_of_edges()
 
     def getBFSNodesFromTree(self, source):
-        tree = nx.bfs_tree(self._grafo, self._idMap[source])
+        tree = nx.bfs_tree(self._grafo, self._idMap[int(source)])
         nodi = list(tree.nodes())
         return nodi[1:]
