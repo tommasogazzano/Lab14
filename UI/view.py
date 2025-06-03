@@ -25,11 +25,15 @@ class View(ft.UserControl):
         self._page.controls.append(self._title)
 
         self._ddStore = ft.Dropdown(label="Store")
+        self._controller.fillDD()
         self._txtIntK = ft.TextField(label="Numero giorni massimo K")
         self._btnCreaGrafo = ft.ElevatedButton(text="Crea Grafo", on_click=self._controller.handleCreaGrafo)
         cont = ft.Container(self._ddStore, width=250, alignment=ft.alignment.top_left)
         row1 = ft.Row([cont, self._txtIntK, self._btnCreaGrafo], alignment=ft.MainAxisAlignment.CENTER,
                       vertical_alignment=ft.CrossAxisAlignment.END)
+
+
+
 
 
 
