@@ -70,11 +70,6 @@ class Controller:
         self.fillNodesDD(store_id)
 
 
-
-
-
-
-
     def handleCerca(self, e):
         source = self._view._ddNode.value
         lista = self._model.getBFSNodesFromTree(source)
@@ -83,4 +78,25 @@ class Controller:
         self._view.update_page()
 
     def handleRicorsione(self, e):
-        pass
+        source = self._view._ddNode.value
+        if source is None:
+            self._view.txt_result.controls.clear()
+            self._view.txt_result.controls.append(
+                ft.Text("Selezionare un nodo di partenza", color="red"))
+            self._view.update_page()
+            return
+
+        listaNodi, Costo = self._model.getBestPath(source)
+
+        self._view.txt_result.controls.clear()
+        if not listaNodi:
+            self._view.txt_result.controls.append(
+                ft.Text("Nessun percorso trovato", color="red"))
+        else:
+            self._view.txt_result.controls.append(
+                ft.Text(f"Di seguito l'esito della ricorsione, trovato percorso con peso massimo {Costo}"))
+            for nodo in listaNodi:
+                # Assumendo che i nodi abbiano un attributo order_id o simile per la visualizzazione
+                self._view.txt_result.controls.append(ft.Text(f"{nodo.order_id}"))
+
+        self._view.update_page()

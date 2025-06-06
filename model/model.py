@@ -1,3 +1,5 @@
+import copy
+
 import networkx as nx
 
 from database.DAO import DAO
@@ -8,6 +10,8 @@ class Model:
         self._idMap = {}
         self._ordini = []
         self._grafo = nx.DiGraph()
+        self._bestPath = []
+        self._maxCost = 0
 
 
     def build_graph(self, store_id, maxGiorni):
@@ -48,3 +52,40 @@ class Model:
         tree = nx.bfs_tree(self._grafo, self._idMap[int(source)])
         nodi = list(tree.nodes())
         return nodi[1:]
+
+    def getBestPath(self, startStr):
+        self._bestPath = []
+        self._maxCost = 0
+
+        start = self._idMap[int(startStr)]
+
+        parziale = [start]
+
+        vicini = self._grafo.neighbors(start)
+        for v in vicini:
+            parziale.append(v)
+            self._ricorsione(parziale)
+            parziale.pop()
+
+        return self._bestPath, self._bestScore
+    
+
+    def _ricorsione(self, parziale):
+        if self.getScore(parziale) > self._maxCost:
+            self._bestScore = self.getScore(parziale)
+            self._bestPath = copy.deepcopy(parziale)
+
+        for v in self._grafo.neighbors(parziale[-1]):
+            if (v not in parziale and #check if not in parziale
+                    self._grafo[parziale[-2]][parziale[-1]]["weight"] >
+                    self._grafo[parziale[-1]][v]["weight"]): #check if peso nuovo arco è minore del precedente
+                parziale.append(v)
+                self._ricorsione(parziale)
+                parziale.pop()
+
+    def getScore(self, listOfNodes):
+        tot = 0
+        for i in range(len(listOfNodes) - 1):
+            tot += self._grafo[listOfNodes[i]][listOfNodes[i + 1]]["weight"]
+
+        return tot
